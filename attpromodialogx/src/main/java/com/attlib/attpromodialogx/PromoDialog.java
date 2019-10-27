@@ -89,7 +89,8 @@ public class PromoDialog extends DialogFragment {
 
             @Override
             public void onPageSelected(int position) {
-                updatePromoDataToViews(position);
+                mCurrentIndex = position;
+                updatePromoDataToViews(mCurrentIndex);
             }
 
             @Override
