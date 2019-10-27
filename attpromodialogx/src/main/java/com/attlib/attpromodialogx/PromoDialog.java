@@ -49,8 +49,9 @@ public class PromoDialog extends DialogFragment {
         return this;
     }
 
-    public void setListener(OnCallBack listener) {
+    public PromoDialog setListener(OnCallBack listener) {
         mListener = listener;
+        return this;
     }
 
     public void show(FragmentActivity activity) {

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.attlib.attpromodialogx.PromoDialog;
 import com.attlib.attpromodialogx.PromoDialogManager;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,6 +21,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 PromoDialogManager.getInstance().newDialog()
                         .setCanceled(true, false)
+                        .setListener(new PromoDialog.OnCallBack() {
+                            @Override
+                            public void onOk() {
+
+                            }
+
+                            @Override
+                            public void onCanceled() {
+                                finish();
+                            }
+                        })
                         .show(MainActivity.this);
             }
         });
