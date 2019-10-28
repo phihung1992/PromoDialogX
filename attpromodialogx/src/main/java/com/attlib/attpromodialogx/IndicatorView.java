@@ -1,4 +1,4 @@
-package com.attlib.attpromodialogx.indicator;
+package com.attlib.attpromodialogx;
 
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -14,7 +16,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.attlib.attpromodialogx.R;
 
-public class IndicatorView extends View implements IUserCustomize {
+public class IndicatorView extends View {
     private static final long DEFAULT_ANIMATE_DURATION = 200;
     private static final int DEFAULT_RADIUS_SELECTED = 20;
     private static final int DEFAULT_RADIUS_UNSELECTED = 15;
@@ -100,33 +102,40 @@ public class IndicatorView extends View implements IUserCustomize {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        float yCenter = getHeight() / 2;
-        int d = distance + 2 * radiusUnselected;
-        float firstXCenter = (getWidth() / 2) - ((dots.length - 1) * d / 2);
+        updateDots();
+    }
 
-        for (int i = 0; i < dots.length; i++) {
-            dots[i].setCenter(i == 0 ? firstXCenter : firstXCenter + d * i, yCenter);
-            dots[i].setCurrentRadius(i == currentPosition ? radiusSelected : radiusUnselected);
-            dots[i].setColor(i == currentPosition ? colorSelected : colorUnselected);
-            dots[i].setAlpha(i == currentPosition ? 255 : radiusUnselected * 255 / radiusSelected);
+    private void updateDots() {
+        if (dots != null) {
+            float yCenter = getHeight() / 2;
+            int d = distance + 2 * radiusUnselected;
+            float firstXCenter = (getWidth() / 2) - ((dots.length - 1) * d / 2);
+
+            for (int i = 0; i < dots.length; i++) {
+                dots[i].setCenter(i == 0 ? firstXCenter : firstXCenter + d * i, yCenter);
+                dots[i].setCurrentRadius(i == currentPosition ? radiusSelected : radiusUnselected);
+                dots[i].setColor(i == currentPosition ? colorSelected : colorUnselected);
+                dots[i].setAlpha(i == currentPosition ? 255 : radiusUnselected * 255 / radiusSelected);
+            }
         }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        for (Dot dot : dots) {
-            dot.draw(canvas);
+        if (dots != null) {
+            for (Dot dot : dots) {
+                dot.draw(canvas);
+            }
         }
     }
 
-    @Override
     public void setViewPager(ViewPager viewPager) {
         this.viewPager = viewPager;
         viewPager.addOnPageChangeListener(listener);
         if (viewPager.getAdapter() != null) {
             initDot(viewPager.getAdapter().getCount());
-            listener.onPageSelected(0);
+            listener.onPageSelected(viewPager.getCurrentItem());
         } else {
             Log.e("MYLOG", "ViewPager Adapter is NULL");
         }
@@ -137,22 +146,18 @@ public class IndicatorView extends View implements IUserCustomize {
         this.currentPosition = currentPosition;
     }
 
-    @Override
     public void setAnimateDuration(long duration) {
         this.animateDuration = duration;
     }
 
-    @Override
     public void setRadiusSelected(int radius) {
         this.radiusSelected = radius;
     }
 
-    @Override
     public void setRadiusUnselected(int radius) {
         this.radiusUnselected = radius;
     }
 
-    @Override
     public void setDistanceDot(int distance) {
         this.distance = distance;
     }
@@ -224,4 +229,42 @@ public class IndicatorView extends View implements IUserCustomize {
 
         }
     };
+
+    public class Dot {
+        private Paint paint;
+
+        private PointF center;
+
+        private int currentRadius;
+
+        public Dot() {
+            paint = new Paint();
+            paint.setAntiAlias(true);
+            center = new PointF();
+        }
+
+        public void setColor(int color) {
+            paint.setColor(color);
+        }
+
+        public void setAlpha(int alpha) {
+            paint.setAlpha(alpha);
+        }
+
+        public void setCenter(float x, float y) {
+            center.set(x, y);
+        }
+
+        public int getCurrentRadius() {
+            return currentRadius;
+        }
+
+        public void setCurrentRadius(int radius) {
+            this.currentRadius = radius;
+        }
+
+        public void draw(Canvas canvas) {
+            canvas.drawCircle(center.x, center.y, currentRadius, paint);
+        }
+    }
 }

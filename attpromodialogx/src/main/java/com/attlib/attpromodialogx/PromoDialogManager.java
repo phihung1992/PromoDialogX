@@ -1,5 +1,10 @@
 package com.attlib.attpromodialogx;
 
+import java.io.IOException;
+
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -7,7 +12,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PromoDialogManager {
-    private static final String BASE_SERVER = "http://resources.attsolution.com/";
+    private static final String BASE_SERVER = "http://api.attsolution.com/";
     private static PromoDialogManager instance;
     private Retrofit retrofit = null;
     private AdDialogInfo[] mAdDialogInfos;
@@ -17,9 +22,11 @@ public class PromoDialogManager {
         return instance;
     }
 
-    public void load(String packageName) {
-        IAdDialogService adDialogService = getRetrofitClient().create(IAdDialogService.class);
-        adDialogService.getAds(getConFigFileName(packageName)).enqueue(new Callback<AdDialogInfo[]>() {
+    public void load(String userName, String password, String packageName) {
+        IAdDialogService adDialogService = getRetrofitClient(userName, password, packageName).create(IAdDialogService.class);
+        AdDialogInfoRequestArgs requestArgs = new AdDialogInfoRequestArgs();
+        requestArgs.setPackageName(packageName);
+        adDialogService.getAds(requestArgs).enqueue(new Callback<AdDialogInfo[]>() {
             @Override
             public void onResponse(Call<AdDialogInfo[]> call, Response<AdDialogInfo[]> response) {
                 if (response.code() != 200) return;
@@ -37,21 +44,26 @@ public class PromoDialogManager {
         return new PromoDialog().setData(mAdDialogInfos);
     }
 
-    private String getConFigFileName(String packageName) {
-        String[] splitText = packageName.split("[.]");
-        String res = "";
-        for (String text : splitText) {
-            res += text;
-        }
-        res += ".json";
-        return res;
-    }
-
-    public Retrofit getRetrofitClient() {
+    private Retrofit getRetrofitClient(final String userName, final String password, final String packageName) {
         if (retrofit == null) {
+            OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+            httpClient.addInterceptor(new Interceptor() {
+                @Override
+                public okhttp3.Response intercept(Chain chain) throws IOException {
+                    Request request = chain.request().newBuilder()
+                            .addHeader("Username", userName)
+                            .addHeader("Password", password)
+                            .addHeader("AppPackageName", packageName)
+                            .build();
+                    return chain.proceed(request);
+                }
+            });
+
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_SERVER)
                     .addConverterFactory(GsonConverterFactory.create())
+                    .client(httpClient.build())
                     .build();
         }
         return retrofit;

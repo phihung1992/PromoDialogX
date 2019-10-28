@@ -63,7 +63,7 @@
             android:layout_marginEnd="16dp"
             android:layout_weight="1" />
 
-        <com.attlib.attpromodialogx.indicator.IndicatorView
+        <com.attlib.attpromodialogx.IndicatorView
             android:id="@+id/images_indicator"
             android:layout_width="match_parent"
             android:layout_height="36dp"
