@@ -113,21 +113,6 @@
                 android:text="Để sau"
                 android:textColor="@android:color/white" />
         </TableRow>
-
-
-        <!--        <ImageView-->
-        <!--            android:id="@+id/iv_animation_image"-->
-        <!--            android:layout_width="@dimen/anim_loading_dialog_image_size"-->
-        <!--            android:layout_height="@dimen/anim_loading_dialog_image_size" />-->
-
-        <!--        <TextView-->
-        <!--            android:id="@+id/tv_loading_content"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginTop="8dp"-->
-        <!--            android:gravity="center"-->
-        <!--            android:text="Loading Content"-->
-        <!--            android:visibility="gone" />-->
     </LinearLayout>
 
 </LinearLayout>
