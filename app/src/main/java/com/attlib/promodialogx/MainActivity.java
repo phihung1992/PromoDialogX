@@ -13,11 +13,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        PromoDialogManager.getInstance().load("test", "test", "test");
+        PromoDialogManager.getInstance().load("admin", "HUNG1abc", "com.attsolution.detectivepuzzles.dev");
         findViewById(R.id.btn_show_dialog).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PromoDialogManager.getInstance().newDialog()
+                boolean showResult = PromoDialogManager.getInstance().newDialog()
                         .setCanceled(true, false)
                         .setListener(new PromoDialog.OnCallBack() {
                             @Override
@@ -31,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
                             }
                         })
                         .show(MainActivity.this);
+                if (!showResult) {
+                    finish();
+                }
             }
         });
     }

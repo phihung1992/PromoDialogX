@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
@@ -34,9 +35,10 @@ public class ImagesPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        ImageView itemView = (ImageView) mInflater.inflate(R.layout.item_image, container, false);
+        LinearLayout itemView = (LinearLayout) mInflater.inflate(R.layout.item_image, container, false);
+        ImageView imageView = itemView.findViewById(R.id.iv_image);
         if (mData != null)
-            Glide.with(mContext).load(mData[position].getPromoImage()).into(itemView);
+            Glide.with(mContext).load(mData[position].getPromoImage()).into(imageView);
         container.addView(itemView);
         return itemView;
     }
