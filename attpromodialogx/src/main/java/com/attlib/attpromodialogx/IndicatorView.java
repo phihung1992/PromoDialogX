@@ -185,6 +185,8 @@ public class IndicatorView extends View {
 
         @Override
         public void onPageSelected(int position) {
+            if (dots.length < 2) return;
+
             beforePosition = currentPosition;
             currentPosition = position;
 
